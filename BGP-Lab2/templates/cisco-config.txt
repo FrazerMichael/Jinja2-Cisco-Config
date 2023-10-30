@@ -1,0 +1,13 @@
+{# templates/cisco-config.txt #}
+
+configure terminal
+hostname {{ hostname }}
+{% for each in interfaces %}
+int {{ interfaceLabels[interfaces.index(each)] }}
+ip address {{ each['ip'] }} {{ each['netmask'] }}
+no shut
+{% endfor %}
+router ospf 1
+{% for each in interfaces %}
+network {{ each['ip'] }} 0.0.0.0 area {{ each['area'] }}
+{% endfor %}
