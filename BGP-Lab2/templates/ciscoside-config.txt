@@ -1,0 +1,22 @@
+{# templates/ciscoside-config.txt #}
+
+configure terminal
+hostname {{ hostname }}
+{% for each in interfaces %}
+interface {{ each['interface'] }}
+ip address {{ each['ip'] }} {{ each['netmask'] }}
+no shut
+{% endfor %}
+router bgp {{ AS }}
+bgp router-id {{ interfaces[0]['ip'] }}
+{% for each in advertising %}
+network {{ each['ip'] }} mask {{ each['netmask'] }}
+{% endfor %}
+{% for each in neighbors %}
+neighbor {{ each['ip'] }} remote {{ each['AS'] }}
+{% if AS == each['AS'] %}
+neighbor {{ each['ip'] }} next-hop-self
+{% endif %}
+{% endfor %}
+end
+
